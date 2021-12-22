@@ -1,6 +1,8 @@
 package haqnawaz.org.sqlitedb20211216;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -30,6 +32,18 @@ public class MainActivity extends AppCompatActivity {
         editAge = findViewById(R.id.editTextAge);
         switchIsActive = findViewById(R.id.switchStudent);
         listViewStudent = findViewById(R.id.listViewStudent);
+
+
+        RecyclerView recyclerView = findViewById(R.id.myRecyclerView);
+        //recyclerView.setHasFixedSize(true);
+
+        RecyclerView.Adapter adapter = new myRecyclerViewAdapter(friendsList);
+        recyclerView.setAdapter(adapter);
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(myRecyclerView.this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+
+
 
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             StudentModel studentModel;
