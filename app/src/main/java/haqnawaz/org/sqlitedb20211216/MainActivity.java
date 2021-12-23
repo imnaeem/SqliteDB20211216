@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     Switch switchIsActive;
     ArrayList<StudentModel> list;
+    RecyclerView recyclerView;
+    RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +35,12 @@ public class MainActivity extends AppCompatActivity {
         buttonViewAll = findViewById(R.id.buttonViewAll);
         buttonupd = findViewById(R.id.updatebtn);
         buttondel = findViewById(R.id.deletebtn);
-        RecyclerView recyclerView = findViewById(R.id.myRecyclerView);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
+        recyclerView = findViewById(R.id.myRecyclerView);
+        layoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             StudentModel studentModel;
-
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -52,10 +53,10 @@ public class MainActivity extends AppCompatActivity {
                                 try
                                 {
                                     studentModel = new StudentModel(editName.getText().toString(), Integer.parseInt(editAge.getText().toString()), switchIsActive.isChecked());
-                                    Toast.makeText(MainActivity.this, studentModel.toString(), Toast.LENGTH_SHORT).show();
                                     DbHelper dbHelper = new DbHelper(MainActivity.this);
                                     dbHelper.addStudent(studentModel);
-
+                                    Toast.makeText(MainActivity.this, "Student Added Successfully", Toast.LENGTH_SHORT).show();
+                                    ViewStudents();
                                 }
                                 catch (Exception e){
                                     Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
@@ -67,28 +68,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        buttonViewAll.setOnClickListener(v -> {
-            DbHelper dbHelper = new DbHelper(MainActivity.this);
-            list = dbHelper.getAllStudents();
-            myRecyclerViewAdapter adapter = new myRecyclerViewAdapter(list);
-            adapter.setOnItemClickListener((position, id) -> {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setMessage("Student will be permanent deleted");
-                builder.setTitle("Delete Student");
-                builder.setCancelable(false);
-                builder.setPositiveButton("Delete", (dialog, asdf) -> {
-                    adapter.deleteRecord(position);
-                    dbHelper.deleteStudent(list.get(position).getId());
-                    Toast.makeText(MainActivity.this, "Student Deleted Successfully", Toast.LENGTH_SHORT).show();
-                });
-                    builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
+        buttonViewAll.setOnClickListener(v -> ViewStudents());
+
+    }
+
+
+    public void ViewStudents()
+    {
+        DbHelper dbHelper = new DbHelper(MainActivity.this);
+        list = dbHelper.getAllStudents();
+        myRecyclerViewAdapter adapter = new myRecyclerViewAdapter(list);
+        adapter.setOnItemClickListener((position, id) -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage("Student will be permanent deleted");
+            builder.setTitle("Delete Student");
+            builder.setCancelable(false);
+            builder.setPositiveButton("Delete", (dialog, asdf) -> {
+
+                dbHelper.deleteStudent(list.get(position).getId());
+                adapter.deleteRecord(position);
+                Toast.makeText(MainActivity.this, "Student Deleted Successfully", Toast.LENGTH_SHORT).show();
             });
-            recyclerView.setAdapter(adapter);
-
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         });
-
-
+        recyclerView.setAdapter(adapter);
     }
 }

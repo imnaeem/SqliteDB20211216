@@ -80,8 +80,10 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public boolean deleteStudent (int id)
     {
-        String sql = "DELETE FROM STUDENT_TABLE WHERE id = " + id;
+        //String sql = "DELETE FROM StudentTable WHERE STUDENTID = "+ id;
+        String sql = "DELETE FROM StudentTable";
         SQLiteDatabase db = this.getReadableDatabase();
+
         db.execSQL(sql);
         db.close();
         return true;

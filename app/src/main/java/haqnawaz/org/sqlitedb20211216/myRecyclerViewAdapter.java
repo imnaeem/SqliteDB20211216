@@ -41,11 +41,6 @@ public class myRecyclerViewAdapter extends RecyclerView.Adapter<myRecyclerViewAd
             textViewStatus = itemView.findViewById(R.id.status);
             deleteButton = itemView.findViewById(R.id.deletebtn);
             updateButton = itemView.findViewById(R.id.updatebtn);
-
-            //deleteButton.setOnClickListener(view -> onClickListener.delbtnOnClick(itemView, getAdapterPosition()));
-
-            //updateButton.setOnClickListener(view -> onClickListener.updbtnOnClick(itemView, getAdapterPosition()));
-
         }
 
     }
