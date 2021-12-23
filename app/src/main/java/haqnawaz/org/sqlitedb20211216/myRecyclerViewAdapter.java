@@ -9,29 +9,28 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class myRecyclerViewAdapter extends RecyclerView.Adapter<myRecyclerViewAdapter.MyViewHolder> {
-    List<Friend> friendsList;
+    ArrayList<StudentModel> Students;
 
-    public myRecyclerViewAdapter(List<Friend> friendsList) {
-        this.friendsList = friendsList;
+    public myRecyclerViewAdapter(ArrayList<StudentModel> students) {
+        this.Students = students;
 
     }
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageViewFriend;
-        TextView textViewFriendName;
-        TextView textViewdateFriend;
-        TextView textViewCity;
-        Friend data;
+        TextView textViewName;
+        TextView textViewAge;
+        TextView textViewStatus;
+        StudentModel data;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageViewFriend = itemView.findViewById(R.id.imageViewFriendPicture);
-            textViewFriendName = itemView.findViewById(R.id.textViewFriendName);
-            textViewdateFriend = itemView.findViewById(R.id.textViewDate);
-            textViewCity = itemView.findViewById(R.id.textViewCity);
+            textViewName = itemView.findViewById(R.id.name);
+            textViewAge = itemView.findViewById(R.id.age);
+            textViewStatus = itemView.findViewById(R.id.status);
         }
     }
 
@@ -49,15 +48,17 @@ public class myRecyclerViewAdapter extends RecyclerView.Adapter<myRecyclerViewAd
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder,
                                  int position) {
-        holder.data=friendsList.get(position);
-        holder.textViewFriendName.setText(holder.data.getName());
-        holder.textViewdateFriend.setText(String.valueOf(holder.data.getDob()));
-        holder.imageViewFriend.setImageResource(holder.data.getImage());
-        holder.textViewCity.setText(holder.data.getCity());
+        holder.data=Students.get(position);
+        holder.textViewName.setText(holder.data.getName());
+        holder.textViewAge.setText(String.valueOf(holder.data.getAge()));
+        if (holder.data.isActive())
+            holder.textViewStatus.setText("Active");
+        else
+            holder.textViewStatus.setText("Inactive");
     }
 
     @Override
     public int getItemCount() {
-        return friendsList.size();
+        return Students.size();
     }
 }
