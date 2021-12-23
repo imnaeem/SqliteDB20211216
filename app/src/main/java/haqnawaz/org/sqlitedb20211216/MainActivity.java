@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     EditText editName, editAge;
     Switch switchIsActive;
     ListView listViewStudent;
+    ArrayList<StudentModel> list;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DbHelper dbHelper = new DbHelper(MainActivity.this);
-                ArrayList<StudentModel> list = dbHelper.getAllStudents();
+                list = dbHelper.getAllStudents();
 
                 RecyclerView.Adapter adapter = new myRecyclerViewAdapter(list);
                 recyclerView.setAdapter(adapter);
@@ -97,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
 //        buttondel.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
+//                //list.remove();
 //
 //            }
 //        });

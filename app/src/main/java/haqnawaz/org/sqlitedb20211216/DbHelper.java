@@ -65,10 +65,9 @@ public class DbHelper extends SQLiteOpenHelper {
         // moving our cursor to first position.
         if (cursorCourses.moveToFirst()) {
             do {
-
-                studentArrayList.add(new StudentModel(cursorCourses.getString(1),
-                      cursorCourses.getInt(2),
-                        cursorCourses.getInt(3) == 1 ? true : false));
+                StudentModel st = new StudentModel(cursorCourses.getString(1), cursorCourses.getInt(2), cursorCourses.getInt(3) == 1 ? true : false);
+                st.setId(cursorCourses.getInt(0));
+                studentArrayList.add(st);
             } while (cursorCourses.moveToNext());
 
         }

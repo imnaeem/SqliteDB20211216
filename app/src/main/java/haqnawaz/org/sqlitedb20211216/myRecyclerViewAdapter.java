@@ -3,6 +3,7 @@ package haqnawaz.org.sqlitedb20211216;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,7 +18,6 @@ public class myRecyclerViewAdapter extends RecyclerView.Adapter<myRecyclerViewAd
 
     public myRecyclerViewAdapter(ArrayList<StudentModel> students) {
         this.Students = students;
-
     }
 
 
@@ -25,20 +25,32 @@ public class myRecyclerViewAdapter extends RecyclerView.Adapter<myRecyclerViewAd
         TextView textViewName;
         TextView textViewAge;
         TextView textViewStatus;
+        Button deleteButton;
+        Button updateButton;
         StudentModel data;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewName = itemView.findViewById(R.id.name);
             textViewAge = itemView.findViewById(R.id.age);
             textViewStatus = itemView.findViewById(R.id.status);
+            deleteButton = itemView.findViewById(R.id.deletebtn);
+            updateButton = itemView.findViewById(R.id.updatebtn);
+
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+
         }
+
+
     }
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder
-
-            (@NonNull ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder (@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.itemview, parent, false);
         return new MyViewHolder(itemView);
@@ -46,8 +58,7 @@ public class myRecyclerViewAdapter extends RecyclerView.Adapter<myRecyclerViewAd
 
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder,
-                                 int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.data=Students.get(position);
         holder.textViewName.setText(holder.data.getName());
         holder.textViewAge.setText(String.valueOf(holder.data.getAge()));
@@ -55,10 +66,26 @@ public class myRecyclerViewAdapter extends RecyclerView.Adapter<myRecyclerViewAd
             holder.textViewStatus.setText("Active");
         else
             holder.textViewStatus.setText("Inactive");
+
+
     }
 
     @Override
     public int getItemCount() {
         return Students.size();
     }
+
+    @Override
+    public void onClick(View v) {
+
+        if (v.getId() == deleteButton.getId()) {
+            Toast.makeText(v.getContext(), "ITEM PRESSED = " + String.valueOf(getAdapterPosition()), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(v.getContext(), "ROW PRESSED = " + String.valueOf(getAdapterPosition()), Toast.LENGTH_SHORT).show();
+        }
+
+        listenerRef.get().onPositionClicked(getAdapterPosition());
+    }
+
+
 }

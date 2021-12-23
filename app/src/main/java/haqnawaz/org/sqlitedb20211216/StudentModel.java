@@ -9,7 +9,6 @@ public class StudentModel {
         this.name = name;
         this.age = age;
         this.isActive = isActive;
-        this.id= id+1;
      }
 
     public String getName() {
