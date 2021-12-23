@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.media.session.PlaybackState;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -19,6 +20,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String ACTIVE_STUDENT = "ActiveSTUDENT";
     public static final String STUDENT_ID = "STUDENTID";
     public static final String STUDENT_TABLE = "StudentTable";
+
 
     public DbHelper(@Nullable Context context) {
         super(context, "studentDB.db", null, 4);
@@ -74,5 +76,14 @@ public class DbHelper extends SQLiteOpenHelper {
 
         cursorCourses.close();
         return studentArrayList;
+    }
+
+    public boolean deleteStudent (int id)
+    {
+        String sql = "DELETE FROM STUDENT_TABLE WHERE id = " + id;
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL(sql);
+        db.close();
+        return true;
     }
 }

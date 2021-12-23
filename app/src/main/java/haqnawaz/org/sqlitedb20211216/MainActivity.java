@@ -5,14 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -21,8 +20,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     Button buttonAdd, buttonViewAll, buttonupd, buttondel;
     EditText editName, editAge;
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     Switch switchIsActive;
-    ListView listViewStudent;
     ArrayList<StudentModel> list;
 
     @Override
@@ -35,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         buttonupd = findViewById(R.id.updatebtn);
         buttondel = findViewById(R.id.deletebtn);
         RecyclerView recyclerView = findViewById(R.id.myRecyclerView);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
 
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             StudentModel studentModel;
@@ -43,66 +44,51 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 LayoutInflater inflater = MainActivity.this.getLayoutInflater();
-                builder.setView(inflater.inflate(R.layout.userinfo, null))
-                        .setPositiveButton("Add student", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                editName = (EditText) ((AlertDialog) dialog).findViewById(R.id.editTextName);
-                                editAge = (EditText) ((AlertDialog) dialog).findViewById(R.id.editTextAge);
-                                switchIsActive = (Switch) ((AlertDialog) dialog).findViewById(R.id.switchStudent);
-                                    try
-                                    {
-                                        studentModel = new StudentModel(editName.getText().toString(), Integer.parseInt(editAge.getText().toString()), switchIsActive.isChecked());
-                                        Toast.makeText(MainActivity.this, studentModel.toString(), Toast.LENGTH_SHORT).show();
-                                        DbHelper dbHelper = new DbHelper(MainActivity.this);
-                                        dbHelper.addStudent(studentModel);
+                builder.setView(inflater.inflate(R.layout.userinfo, new LinearLayout(MainActivity.this), false))
+                        .setPositiveButton("Add student", (dialog, id) -> {
+                            editName = (EditText) ((AlertDialog) dialog).findViewById(R.id.editTextName);
+                            editAge = (EditText) ((AlertDialog) dialog).findViewById(R.id.editTextAge);
+                            switchIsActive = (Switch) ((AlertDialog) dialog).findViewById(R.id.switchStudent);
+                                try
+                                {
+                                    studentModel = new StudentModel(editName.getText().toString(), Integer.parseInt(editAge.getText().toString()), switchIsActive.isChecked());
+                                    Toast.makeText(MainActivity.this, studentModel.toString(), Toast.LENGTH_SHORT).show();
+                                    DbHelper dbHelper = new DbHelper(MainActivity.this);
+                                    dbHelper.addStudent(studentModel);
 
-                                    }
-                                    catch (Exception e){
-                                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
-                                    }
                                 }
-
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
+                                catch (Exception e){
+                                    Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                                }
+                            })
+                        .setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
             }
         });
 
-        buttonViewAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DbHelper dbHelper = new DbHelper(MainActivity.this);
-                list = dbHelper.getAllStudents();
+        buttonViewAll.setOnClickListener(v -> {
+            DbHelper dbHelper = new DbHelper(MainActivity.this);
+            list = dbHelper.getAllStudents();
+            myRecyclerViewAdapter adapter = new myRecyclerViewAdapter(list);
+            adapter.setOnItemClickListener((position, id) -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("Student will be permanent deleted");
+                builder.setTitle("Delete Student");
+                builder.setCancelable(false);
+                builder.setPositiveButton("Delete", (dialog, asdf) -> {
+                    adapter.deleteRecord(position);
+                    dbHelper.deleteStudent(list.get(position).getId());
+                    Toast.makeText(MainActivity.this, "Student Deleted Successfully", Toast.LENGTH_SHORT).show();
+                });
+                    builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+            });
+            recyclerView.setAdapter(adapter);
 
-                RecyclerView.Adapter adapter = new myRecyclerViewAdapter(list);
-                recyclerView.setAdapter(adapter);
-
-                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
-                recyclerView.setLayoutManager(layoutManager);
-
-            }
         });
 
-//        buttonupd.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//            }
-//        });
-//
-//        buttondel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                //list.remove();
-//
-//            }
-//        });
 
     }
 }
