@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+                builder.setTitle("Add Student");
                 builder.setView(inflater.inflate(R.layout.userinfo, new LinearLayout(MainActivity.this), false))
                         .setPositiveButton("Add student", (dialog, id) -> {
                             editName = ((AlertDialog) dialog).findViewById(R.id.editTextName);
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                     editName.setText(list.get(position).getName());
                     editAge.setText(String.valueOf(list.get(position).getAge()));
                     switchIsActive.setChecked(list.get(position).isActive());
+                    builder.setTitle("Update Student");
 
                     builder.setView(myDialog);
                     builder.setPositiveButton("Update student", (dialog, asdf) -> {
