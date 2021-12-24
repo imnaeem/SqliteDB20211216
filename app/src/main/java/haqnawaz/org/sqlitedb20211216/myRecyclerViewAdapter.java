@@ -1,7 +1,6 @@
 package haqnawaz.org.sqlitedb20211216;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +67,8 @@ public class myRecyclerViewAdapter extends RecyclerView.Adapter<myRecyclerViewAd
 
         holder.deleteButton.setOnClickListener(view -> onClickListener.onRecyclerViewItemClicked(position, view.getId()));
 
+        holder.updateButton.setOnClickListener(view -> onClickListener.onRecyclerViewItemClicked(position, view.getId()));
+
 
     }
 
@@ -83,6 +84,13 @@ public class myRecyclerViewAdapter extends RecyclerView.Adapter<myRecyclerViewAd
         notifyItemRangeChanged(position,Students.size());
     }
 
-
+    public void updateStudent(int id, String name, int age, boolean status)
+    {
+        StudentModel student = Students.get(id);
+        student.setName(name);
+        student.setAge(age);
+        student.setActive(status);
+        notifyItemChanged(id);
+    }
 
 }

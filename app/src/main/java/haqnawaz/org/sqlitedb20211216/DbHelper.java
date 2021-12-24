@@ -67,7 +67,7 @@ public class DbHelper extends SQLiteOpenHelper {
         // moving our cursor to first position.
         if (cursorCourses.moveToFirst()) {
             do {
-                StudentModel st = new StudentModel(cursorCourses.getString(1), cursorCourses.getInt(2), cursorCourses.getInt(3) == 1 ? true : false);
+                StudentModel st = new StudentModel(cursorCourses.getString(1), cursorCourses.getInt(2), cursorCourses.getInt(3) == 1);
                 st.setId(cursorCourses.getInt(0));
                 studentArrayList.add(st);
             } while (cursorCourses.moveToNext());
@@ -80,7 +80,31 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public boolean deleteStudent (int id)
     {
-        //String sql = "DELETE FROM StudentTable WHERE STUDENTID = "+ id;
+        String sql = "DELETE FROM StudentTable WHERE STUDENTID = "+ id;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        db.execSQL(sql);
+        db.close();
+        return true;
+    }
+
+    public void updateStudent(int id, String name, int age, boolean status)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(STUDENT_NAME, name);
+        cv.put(STUDENT_AGE, age);
+        cv.put(ACTIVE_STUDENT, status);
+        String whereClause = "STUDENTID" + " = ?";
+        String[] values = new String[]{String.valueOf(id)};
+
+        db.update(STUDENT_TABLE, cv, whereClause, values);
+        db.close();
+    }
+
+    public boolean deleteAll ()
+    {
         String sql = "DELETE FROM StudentTable";
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -88,4 +112,5 @@ public class DbHelper extends SQLiteOpenHelper {
         db.close();
         return true;
     }
+
 }
